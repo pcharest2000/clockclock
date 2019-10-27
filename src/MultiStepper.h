@@ -11,9 +11,13 @@
 #define MultiStepper_h
 #include <Arduino.h>
 #include <SPI.h>
-#define NUMSTEPPERS 48
+#define CLOCKWIDTH 8 //Width of clock in clocks
+#define CLOCKHEIGTH 3 //Heigth of clock in cloks
+#define NUMSTEPPERS 2*CLOCKWIDTH*CLOCKHEIGTH //Total number of steppers
 #define MAXSPEED 400 // Speed in HZ
-#define STEPSTATECOUNT 6
+#define STEPSTATECOUNT 6 //Number states for steppers io
+#define MINACCELWIDTH 100    //Used in the acceleration table call this is the minium distance to accellerate from 0 to max speed
+#define MAXSTARTSPEED 100  //HZ acoording to the documentation  this is the maximum start speed 
 #define ACCELSTEPS 5 // Number of increments for acceleration calculate
 #define SPIBUFFERL NUMSTEPPERS / 2
 class MultiStepper {
@@ -31,8 +35,8 @@ public:
   // set target calculate the trapezoide shape as function of the start speed
   // end speed and stepWidth of the acceleration speeds are ine herts and width
   // in steps
-  void setTarget(uint8_t i, int32_t pos, uint32_t startSpeed, uint32_t endSpeed,
-                 int32_t stepsWidth); // position is in steps
+  void setTarget(uint8_t i, int32_t pos, uint32_t startSpeed, uint32_t endSpeed,int32_t stepsWidth); // position is in steps
+  void setTarget(uint8_t i, int32_t pos,uint32_t speed);
   void setTargetAll(int32_t pos, uint32_t startSpeed, uint32_t endSpeed,
                     int32_t stepsWidth);
   void setSpeed(uint8_t i, uint32_t speed); // speed is in hz

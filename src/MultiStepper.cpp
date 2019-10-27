@@ -62,7 +62,9 @@ void MultiStepper::setTarget(uint8_t i, int32_t pos, uint32_t startSpeed,
   if (endSpeed < startSpeed) {
     return;
   }
-
+  if(startSpeed>MAXSTARTSPEED){
+    startSpeed = MAXSTARTSPEED;
+  }
   int32_t deltaSteps; // This is the interval at which we odify the speed for
                       // acceleration
   if (pos > steppers[i].currentStep) {
@@ -101,11 +103,8 @@ void MultiStepper::setTarget(uint8_t i, int32_t pos, uint32_t startSpeed,
   //   Serial.println(steppers[i].accelTable[j][1]);
   // }
 }
-void MultiStepper::setSpeed(uint8_t i, uint32_t speed) {
-  if (speed > MAXSPEED) {
-    speed = MAXSPEED;
-  }
-  steppers[i].delayMicro = 1000000 / speed;
+void MultiStepper::setTarget(uint8_t i, int32_t pos, uint32_t speed){
+  setTarget(i, pos, MAXSTARTSPEED, speed, MINACCELWIDTH);
 }
 void MultiStepper::stepUp(uint8_t i) {
   incrementStepState(i);
@@ -166,8 +165,7 @@ void MultiStepper::run() {
   if (needsTransmit == true) {
     spiBuildArray();
     // Send stepper spi array
-    // SPI.w
-    // SPI.write(spiArray, SPIBUFFERL);
+     SPI.write(spiArray, SPIBUFFERL);
   }
 }
 void MultiStepper::spiBuildArray() {
