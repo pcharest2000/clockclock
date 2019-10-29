@@ -7,18 +7,23 @@
 //MultiStepper mStepper;
 Clock myClock;
 RTClock rtclock(RTCSEL_LSE);
-int32_t endpos = 12000;
+tm_t mytime;
+int32_t endpos = 2000;
 void setup() {
-
+  mytime.year=2019-1970;
+  mytime.month=10;
+  mytime.day=27;
+  mytime.hour=11;
+  mytime.minute=38;
+  mytime.second=30;
   // put your setup code here, to run once:
   pinMode(PC13, OUTPUT);
 
   Serial.begin(115200);
   SPI.begin();
   SPI.setClockDivider(SPI_CLOCK_DIV2);
-  // mStepper.setTargetAll(endpos, 100, 200, 100);
-  myClock.setTargetAll(endpos,100,200,100);
-  // rtclock.setTime(1572188694);
+  myClock.setTargetAll(endpos,10,50,100);
+  //rtclock.setTime(mytime);
 }
 uint32_t start, delta, end;
 uint32_t counter = 10000000;
@@ -29,7 +34,6 @@ void loop() {
   // Serial.println(rtclock.getTime());;
   while (millis() < start)
     myClock.run();
-    // mStepper.run();
    Serial.print("H: ");
    Serial.print(rtclock.hour( ));
    Serial.print("M: ");
@@ -39,7 +43,7 @@ void loop() {
    Serial.println(myClock.getMinutePos(0, 0));
   if (myClock.stepperDone(0)) {
     endpos = endpos * -1;
-    myClock.setTargetAll(endpos, 100, 200, 100);
+    myClock.setTargetAll(endpos, 10, 50, 100);
     // mStepper.setTarget(1, endpos, 100,200,1000);
   }
 }
